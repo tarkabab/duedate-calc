@@ -1,4 +1,4 @@
-import hu.emarsys.Util.calculateDueDate
+import hu.emarsys.duedate.Util.calculateDueDate
 import org.joda.time._
 import org.joda.time.DateTimeConstants.{SATURDAY, SUNDAY}
 
