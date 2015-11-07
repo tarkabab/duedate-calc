@@ -1,12 +1,12 @@
-package hu.emarsys.duedate
+package hu.emarsys.utils
 
 import org.scalatest.FunSpec
 
-import hu.emarsys.duedate.Util.{calculateDueDate, nextWorkingDay, addWorkingDays, addWorkingHours}
-import org.joda.time.DateTime
+import hu.emarsys.utils.DueDateCalc.{calculateDueDate, nextWorkingDay, addWorkingDays, addWorkingHours, parseDate}
+import org.joda.time.{DateTimeZone, DateTime}
 import org.joda.time.DateTimeConstants._
 
-class UtilSpec extends FunSpec {
+class DueDateCalcSpec extends FunSpec {
 
   describe("The CalculateDueDate method") {
     it("should take the submit date and turnaround time as an input") {
@@ -93,5 +93,27 @@ class UtilSpec extends FunSpec {
     }
   }
 
-  // todo: daylight saving tests
+  describe("The parseDate method") {
+    it("should accept date in an ISO format") {
+      val date = "2015-10-26T09:30:00.000+02:00"
+      parseDate(date)
+    }
+    it("should throw IllegalArgument exception in case of an invalid date format") {
+      val invalidDate: String = "not a date"
+      val exception = intercept[IllegalArgumentException] {
+        parseDate(invalidDate)
+      }
+      assert(exception.getMessage === """Invalid format: "not a date"""")
+    }
+    it("should throw IllegalArgument exception in case of an invalid date") {
+      val zone = DateTimeZone.forID("Europe/Budapest")
+      DateTimeZone.setDefault(zone)
+      val invalidDate: String = "2015-03-29T02:59:00.000"
+      val exception = intercept[IllegalArgumentException] {
+        parseDate(invalidDate)
+      }
+      assert(exception.getMessage ===
+        """Cannot parse "2015-03-29T02:59:00.000": Illegal instant due to time zone offset transition (Europe/Budapest)""")
+    }
+  }
 }

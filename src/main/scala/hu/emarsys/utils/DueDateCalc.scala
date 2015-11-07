@@ -1,9 +1,9 @@
-package hu.emarsys.duedate
+package hu.emarsys.utils
 
 import org.joda.time.DateTimeConstants._
 import org.joda.time.{DateTime, Period}
 
-object Util {
+object DueDateCalc {
 
   val workHourStart = 9
   require(workHourStart >= 0 && workHourStart < 24)
@@ -11,13 +11,21 @@ object Util {
   require(workHourEnd >= 0 && workHourEnd < 24 && workHourEnd > workHourStart)
   val workHoursPerDay = workHourEnd - workHourStart
 
-  private[duedate] def nextWorkingDay(day: DateTime): DateTime = day.getDayOfWeek match {
+  private[utils] def parseDate(date: String): DateTime = {
+    DateTime.parse(date)
+  }
+
+  private[utils] def formatDate(date: DateTime): String = {
+    date.toString
+  }
+
+  private[utils] def nextWorkingDay(day: DateTime): DateTime = day.getDayOfWeek match {
     case FRIDAY => day.plusDays(3)
     case SATURDAY => day.plusDays(2)
     case _ => day.plusDays(1)
   }
 
-  private[duedate] def addWorkingDays(start: DateTime, days: Int) = {
+  private[utils] def addWorkingDays(start: DateTime, days: Int) = {
     val daysPerWeek = 7
     val workingDaysPerWeek = 5
     val weekendLength = daysPerWeek - workingDaysPerWeek
@@ -32,7 +40,7 @@ object Util {
     start.plusDays(daysWithWeekends)
   }
 
-  private[duedate] def addWorkingHours(start: DateTime, hours: Int): DateTime = {
+  private[utils] def addWorkingHours(start: DateTime, hours: Int): DateTime = {
     require(hours < workHoursPerDay)
     val endOfWork = start.withTime(workHourEnd,0,0,0)
     val end = start.plusHours(hours)
@@ -46,7 +54,8 @@ object Util {
   }
 
   def calculateDueDate(submitDate: String, turnaroundTime: Int): String = {
-    val start: DateTime = DateTime.parse(submitDate)
+    @throws[IllegalArgumentException]
+    val start = parseDate(submitDate)
 
     val days = turnaroundTime / workHoursPerDay
     val hours = turnaroundTime % workHoursPerDay
@@ -54,6 +63,6 @@ object Util {
     val startPlusWorkingDays = addWorkingDays(start, days)
     val dueDate = addWorkingHours(startPlusWorkingDays, hours)
 
-    dueDate.toString
+    formatDate(dueDate)
   }
 }

@@ -1,4 +1,4 @@
-import hu.emarsys.duedate.Util.calculateDueDate
+import hu.emarsys.utils.DueDateCalc.calculateDueDate
 import org.joda.time._
 import org.joda.time.DateTimeConstants.{SATURDAY, SUNDAY}
 
@@ -15,4 +15,14 @@ val workHoursPerDay = workHourEnd - workHourStart
 val completeWorkingDays = turnaroundTime / workHoursPerDay
 val remainingWorkHours = turnaroundTime % workHoursPerDay
 
-
+// 2015.	március	29.	2 h	-	október	25.	3 h
+val zone = DateTimeZone.forID("Europe/Budapest")
+DateTimeZone.setDefault(zone)
+val cetEnd = DateTime.parse("2015-03-29T01:59:00.000")
+val cestStart = cetEnd.plusMinutes(1)
+val cestEnd = DateTime.parse("2015-10-25T02:59:00.000")
+val cetStart = cestEnd.plusMinutes(1)
+DateTimeZone.getDefault()
+//DateTimeZone.getDefault()
+//DateTime.parse("2015-03-29T02:59:00.000")
+//DateTime.parse("not a date")
