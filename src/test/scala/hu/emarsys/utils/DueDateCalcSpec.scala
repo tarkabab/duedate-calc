@@ -2,7 +2,7 @@ package hu.emarsys.utils
 
 import org.scalatest.FunSpec
 
-import hu.emarsys.utils.DueDateCalc.{calculateDueDate, nextWorkingDay, addWorkingDays, addWorkingHours, parseDate}
+import hu.emarsys.utils.DueDateCalc.{calculateDueDate, nextWorkingDay, addWorkingDays, addWorkingHours, parseDate, formatDate}
 import org.joda.time.{DateTimeZone, DateTime}
 import org.joda.time.DateTimeConstants._
 
@@ -114,6 +114,14 @@ class DueDateCalcSpec extends FunSpec {
       }
       assert(exception.getMessage ===
         """Cannot parse "2015-03-29T02:59:00.000": Illegal instant due to time zone offset transition (Europe/Budapest)""")
+    }
+  }
+
+  describe("The formatDate method") {
+    it("should output yyyy-MM-ddThh:mm:ss.SSSZ format") {
+      val date = parseDate("2015-10-26T09:30:00.000+02:00")
+      val formatted = formatDate(date)
+      assert(formatted === "2015-10-26T09:30:00.000+02:00")
     }
   }
 }
